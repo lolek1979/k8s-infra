@@ -1,6 +1,8 @@
 controller:
   additionalPlugins:
     - configuration-as-code-support:latest
+    - eddsa-api:0.3.0.1-19.vc432d923e5ee
+    - docker-pipeline:latest
   JCasC:
     defaultConfig: false
     configUrls:  "https://raw.githubusercontent.com/lolek1979/jenkins-config-as-code/main/jenkins.yaml"
