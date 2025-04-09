@@ -1,8 +1,9 @@
 controller:
-  additionalPlugins:
-    - configuration-as-code-support:latest
-    - eddsa-api:0.3.0.1-19.vc432d923e5ee
-    - docker-pipeline:latest
+  # additionalPlugins:
+  #   - configuration-as-code-support
+  #   - EDDSA API:0.3.0-4.v84c6f0f4969e
+  #   - docker-workflow
+
   JCasC:
     defaultConfig: false
     configUrls:  "https://raw.githubusercontent.com/lolek1979/jenkins-config-as-code/main/jenkins.yaml"
@@ -27,6 +28,6 @@ controller:
     enabled: true
     storageClass: local-path
     size: 8Gi
-    deleteClaim: false
-    annotations:
-      "helm.sh/resource-policy": keep
+    # deleteClaim: false
+    # annotations:
+    #   "helm.sh/resource-policy": keep
