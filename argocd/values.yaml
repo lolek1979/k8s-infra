@@ -1,0 +1,11 @@
+server:
+  ingress:
+    enabled: false
+  service:
+    type: LoadBalancer
+
+configs:
+  cm:
+    admin.enabled: "true"
+    admin.account.token.enabled: "true"
+    accounts.admin: apiKey

@@ -1,0 +1,30 @@
+controller:
+  additionalPlugins:
+    - configuration-as-code-support:latest
+  JCasC:
+    defaultConfig: false
+    configUrls:  "https://raw.githubusercontent.com/lolek1979/jenkins-config-as-code/main/jenkins.yaml"
+
+  ingress:
+    enabled: false
+  serviceType: LoadBalancer
+
+  admin:
+    username: admin
+    password: admin
+
+  securityRealm: "jenkins"
+  authorizationStrategy: "loggedInUsersCanDoAnything"
+  disableRememberMe: true
+  disableSetupWizard: true
+
+  runAsUser: 1000
+  fsGroup: 1000
+
+  persistence:
+    enabled: true
+    storageClass: local-path
+    size: 8Gi
+    deleteClaim: false
+    annotations:
+      "helm.sh/resource-policy": keep
