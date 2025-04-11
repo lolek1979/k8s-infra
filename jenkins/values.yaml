@@ -1,47 +1,63 @@
 controller:
-  jenkinsUrl: "https://jenkins.k8s.orb.local/"
-  # additionalPlugins:
-  #   - configuration-as-code-support
-  #   - EDDSA API:0.3.0-4.v84c6f0f4969e
-  #   - docker-workflow
+  serviceAccount:
+    create: true
+    name: jenkins
+  # Use ClusterIP since Ingress is handling the external exposure
+  serviceType: ClusterIP
+
+  # Set the internal URL for Jenkins (this will be used by Jenkins when generating links)
+  jenkinsUrl: "https://jenkins.k8s.orb.local"
+
+  # Configure Ingress for Jenkins
+  ingress:
+    enabled: true
+    ingressClassName: "nginx"
+    # Set the hostname that will be used externally
+    hostName: "jenkins.k8s.orb.local"
+    annotations:
+      # Tell NGINX to forward HTTP traffic (Jenkins runs on HTTP inside the pod)
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+      # Rewrite the incoming URI to "/" if needed
+      nginx.ingress.kubernetes.io/rewrite-target: "/"
+    # Optionally configure TLS
+    tls:
+      - hosts:
+          - jenkins.k8s.orb.local
+        secretName: jenkins-tls  # Create this secret if you want HTTPS termination via Ingress,
+                                  # or leave tls: [] to access via HTTP.
 
   JCasC:
     defaultConfig: false
     overwriteConfiguration: true
     configUrls:  "https://raw.githubusercontent.com/lolek1979/jenkins-config-as-code/main/jenkins.yaml"
-
-  ingress:
-    enabled: true
-    ingressClassName: nginx
-    annotations:
-      kubernetes.io/ingress.class: nginx
-      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/x-forwarded-prefix: "/"
-      nginx.ingress.kubernetes.io/use-regex: "true"
-    path: /
-    hostName: jenkins.k8s.orb.local
-    tls:
-      - hosts:
-          - jenkins.k8s.orb.local
-        secretName: jenkins-tls
+    
+  additionalPlugins:
+    - docker-workflow:611.v16e84da_6d3ff
 
   admin:
     username: admin
     password: admin
 
-  securityRealm: "jenkins"
-  authorizationStrategy: "loggedInUsersCanDoAnything"
-  disableRememberMe: true
   disableSetupWizard: true
 
-  runAsUser: 1000
-  fsGroup: 1000
-
+  # Persistence settings for Jenkins home
   persistence:
     enabled: true
     storageClass: local-path
     size: 8Gi
-    # deleteClaim: false
-    # annotations:
-    #   "helm.sh/resource-policy": keep
+
+  # ingress:
+  #   enabled: true
+  #   ingressClassName: nginx
+  #   annotations:
+  #     kubernetes.io/ingress.class: nginx
+  #     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+  #     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  #     nginx.ingress.kubernetes.io/x-forwarded-prefix: "/"
+  #     nginx.ingress.kubernetes.io/use-regex: "true"
+  #   path: /
+  #   hostName: jenkins.k8s.orb.local
+  #   tls:
+  #     - hosts:
+  #         - jenkins.k8s.orb.local
+  #       secretName: jenkins-tls
