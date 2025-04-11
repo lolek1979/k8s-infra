@@ -1,15 +1,15 @@
 server:
   ingress:
     enabled: true
-    hostname: argocd.k8s.orb.local
+    hostname: "argocd.k8s.orb.local"  # this is the one the chart uses internally!
     ingressClassName: nginx
     annotations:
       kubernetes.io/ingress.class: nginx
-    tls: 
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    tls:
       - hosts:
           - argocd.k8s.orb.local
         secretName: argocd-tls
-
 configs:
   cm:
     admin.enabled: "true"
