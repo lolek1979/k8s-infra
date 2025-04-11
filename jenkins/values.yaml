@@ -1,4 +1,5 @@
 controller:
+  jenkinsUrl: "http://jenkins.k8s.orb.local/"
   # additionalPlugins:
   #   - configuration-as-code-support
   #   - EDDSA API:0.3.0-4.v84c6f0f4969e
@@ -6,11 +7,29 @@ controller:
 
   JCasC:
     defaultConfig: false
+    overwriteConfiguration: true
     configUrls:  "https://raw.githubusercontent.com/lolek1979/jenkins-config-as-code/main/jenkins.yaml"
 
   ingress:
-    enabled: false
-  serviceType: LoadBalancer
+    enabled: true
+
+    apiVersion: networking.k8s.io/v1
+
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+
+    ingressClassName: nginx
+
+    path: /
+
+    hostName: jenkins.k8s.orb.local
+
+    tls:
+      - hosts:
+          - jenkins.k8s.orb.local
+        secretName: jenkins-tls
 
   admin:
     username: admin
