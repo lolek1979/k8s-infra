@@ -68,7 +68,15 @@ helm upgrade --install argocd argo/argo-cd -n argocd --create-namespace -f k8s-i
 kubectl apply -f k8s-infra/jenkins/jenkins-rbac.yaml
 helm upgrade --install jenkins jenkins/jenkins -n jenkins --create-namespace -f k8s-infra/jenkins/values.yaml
 ```
+---
+# Argocd generate token
+argocd login argocd.k8s.orb.local \
+  --username admin \
+  --password your-password \
+  --insecure \
+  --grpc-web
 
+  argocd account generate-token --account admin
 ---
 
 # TLS Using a Self-Signed Certificate
