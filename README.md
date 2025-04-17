@@ -71,14 +71,37 @@ helm upgrade --install jenkins jenkins/jenkins -n jenkins --create-namespace -f 
 
 ---
 
-## 📜 License
+# TLS Using a Self-Signed Certificate
 
-MIT
+```bash
+openssl req -x509 -nodes -days 365 \
+  -newkey rsa:2048 \
+  -keyout jenkins.key \
+  -out jenkins.crt \
+  -subj "/CN=jenkins.k8s.orb.local/O=jenkins.k8s.orb.local"
 
----
+  kubectl create secret tls jenkins-tls \
+  --cert=jenkins.crt \
+  --key=jenkins.key \
+  --namespace jenkins
+```
 
-## 🙋‍♂️ Maintainer
+# Using cert-manager and Let’s Encrypt
 
-**Lolek / pkonieczny321**
+```bash
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: jenkins-cert
+  namespace: jenkins
+spec:
+  secretName: jenkins-tls
+  issuerRef:
+    name: letsencrypt-staging  # or letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: jenkins.k8s.orb.local
+  dnsNames:
+    - jenkins.k8s.orb.local
 
-Feel free to fork, contribute, or ask questions!
+kubectl apply -f jenkins-cert.yaml
+```
