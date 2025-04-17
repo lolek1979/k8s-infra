@@ -13,6 +13,8 @@ node('docker-agent') {
                   echo "❌ Docker login failed"
                   exit 1
                 fi
+                echo "🧼 Removing Docker credentials..."
+                rm -f ~/.docker/config.json
             '''
         }
     }
